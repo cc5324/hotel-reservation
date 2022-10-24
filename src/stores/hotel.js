@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import API from "@/api/service";
 import router from "../router";
+import { camelizeJsonKeys } from "@/assets/utilities/camelizeJsonKeys.js";
 
 export const useHotelStore = defineStore("hotel", {
   state: () => ({
@@ -11,7 +12,7 @@ export const useHotelStore = defineStore("hotel", {
     getRoomById: (state) => {
       return (roomId) => state.rooms.find((room) => room.id === roomId);
     },
-    getRoomAmenities: (state) => state.room.amenities,
+    getRoomAmenities: (state) => camelizeJsonKeys(state.room.amenities),
   },
   actions: {
     async getRooms() {

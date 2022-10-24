@@ -1,7 +1,10 @@
 <script setup>
 import { useHotelStore } from "@/stores/hotel.js";
 import { storeToRefs } from "pinia";
-// import RoomAmenities from "@/components/RoomAmenities.vue";
+
+import RoomAmenities from "@/components/RoomAmenities.vue";
+import RoomPhotos from "@/components/RoomPhotos.vue";
+
 const hotelStore = useHotelStore();
 const { room } = storeToRefs(hotelStore);
 
@@ -9,15 +12,8 @@ console.log(`room `, room);
 </script>
 
 <template>
-  <div class="photos">
-    <div>
-      <img :src="room.imageUrl[0]" class="photos-main" />
-      <span class="room-name">{{ room.name }}</span>
-    </div>
-    <div class="photos-minors">
-      <img :src="room.imageUrl[1]" class="" />
-      <img :src="room.imageUrl[2]" class="" />
-    </div>
+  <div class="photos-box">
+    <RoomPhotos :photos="room.imageUrl" />
   </div>
   <h3>{{ room.name }}</h3>
   <div class="description">
@@ -37,47 +33,16 @@ console.log(`room `, room);
       {{ room.checkInAndOut.checkInEarly }} －
       {{ room.checkInAndOut.checkInLate }}
     </div>
+    <span>Check Out</span>
     <div>{{ room.checkInAndOut.checkOut }}</div>
   </div>
   <div class="facilities">
-    <!-- <RoomAmenities :amenities="room.amenities" /> -->
+    <RoomAmenities :amenities="hotelStore.getRoomAmenities" />
   </div>
 </template>
 
 <style scoped lang="scss">
-.photos {
-  display: flex;
-  justify-content: center;
-  margin: auto 0;
-  width: 100%;
-
-  img {
-    max-width: 100%;
-  }
-
-  &-main {
-    max-height: 450px;
-    object-fit: contain;
-  }
-
-  .room-name {
-    padding: 5px;
-    position: absolute;
-    bottom: 30px;
-    right: -45px;
-    background: black;
-    color: white;
-  }
-
-  &-minors {
-    margin-left: 15px;
-    img {
-      display: block;
-      margin-bottom: 10px;
-      width: 50px;
-      height: 50px;
-      object-fit: cover;
-    }
-  }
+.photos-box {
+  height: 300px;
 }
 </style>
