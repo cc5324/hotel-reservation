@@ -25,6 +25,14 @@ a,
   body {
     display: flex;
     place-items: center;
+    max-width: 860px;
+  }
+}
+
+/* @media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
   }
 
   #app {
@@ -32,4 +40,4 @@ a,
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
-}
+} */
