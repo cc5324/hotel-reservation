@@ -15,12 +15,14 @@ import "@/plugins/fontawesome";
 // import "./assets/main.css";
 import "./assets/scss/base.scss";
 
+import { quasar } from "./plugins";
+
 const app = createApp(App);
 
 // app.use(pinia);
 app.use(createPinia());
 app.use(router);
+app.use(quasar);
 app.component("SvgIcon", SvgIcon);
-
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.mount("#app");
