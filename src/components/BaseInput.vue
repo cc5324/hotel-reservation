@@ -10,7 +10,7 @@ const props = defineProps({
     required: true,
   },
 });
-const emit = defineEmits("update:modelValue");
+const emit = defineEmits(["update:modelValue"]);
 
 const input = computed({
   get() {
