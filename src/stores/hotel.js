@@ -8,6 +8,10 @@ export const useHotelStore = defineStore("hotel", {
     rooms: [],
     room: {},
     booked: [],
+    requestState: {
+      isReady: false,
+      isSuccess: false,
+    },
   }),
   getters: {
     getRoomById: (state) => {
@@ -17,6 +21,12 @@ export const useHotelStore = defineStore("hotel", {
     getBookedDates: (state) => state.booked.map((book) => book.date),
   },
   actions: {
+    resetRequestState() {
+      this.requestState = {
+        isSuccess: false,
+        isReady: false,
+      };
+    },
     async getRooms() {
       try {
         const { success, items: rooms } = await API.GET("rooms");
@@ -34,16 +44,22 @@ export const useHotelStore = defineStore("hotel", {
         const { room, booking } = await API.GET(`room/${roomID}`);
         this.room = room[0];
         this.booked = booking;
-        // console.log(`booked`, this.booked);
       } catch (error) {
         console.log(error);
         router.push({ name: "NotFound" });
       }
     },
     async reserveRoom(roomID, customerInfo) {
+      this.requestState = {
+        isSuccess: false,
+        isReady: false,
+      };
       try {
-        const { data } = await API.POST(`rooms/${roomID}`, customerInfo);
-        return data;
+        const { success } = await API.POST(`room/${roomID}`, customerInfo);
+        this.requestState = {
+          isSuccess: success,
+          isReady: true,
+        };
       } catch (error) {
         console.log(error);
       }

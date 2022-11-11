@@ -1,23 +1,20 @@
 <script setup>
-import { computed, onMounted, ref } from "vue";
-import { useHotelStore } from "@/stores/hotel.js";
+import { computed } from "vue";
 import dayjs from "dayjs";
 
 const props = defineProps({
   modelValue: {
     required: true,
   },
+  bookedDates: {
+    type: Array,
+    default: () => [],
+  },
 });
-
-const today = dayjs().format("YYYY-MM-DD");
-
-// const today = new Date().toISOString().split("T")[0];
-console.log(`test`, dayjs().add(3, "M").format("YYYY-MM-DD"));
 
 const emit = defineEmits(["update:modelValue"]);
 
-const store = useHotelStore();
-
+const today = dayjs().format("YYYY-MM-DD");
 const range = computed({
   get() {
     return props.modelValue;
@@ -27,25 +24,17 @@ const range = computed({
   },
 });
 
-const noRoom = ref(["2022-11-30", "2022-12-31", "2022-12-03"]);
-
-onMounted(() => {
-  noRoom.value = store.getBookedDates;
-});
-
 function optionFilter(date) {
   // 每個可選日期都會被傳進 function
-  // console.log(`date`, date);
-  return !dayjs(date).isBefore(dayjs(today)) && !noRoom.value.includes(date);
-  // return !noRoom.value.includes(date) && date >= today;
+  date = dayjs(date).format("YYYY-MM-DD");
+  return (
+    !props.bookedDates.includes(date) && !dayjs(date).isBefore(dayjs(today))
+  );
 }
-
-optionFilter;
 </script>
 
 <template>
-  <!-- <p v-for="day in noRooms" :key="day">{{ day }}</p> -->
-  <!-- {{ today }} -->
+  <p v-for="day in bookedDates" :key="day">{{ day }}</p>
   {{ range }}
   <QDate
     v-model="range"
@@ -58,7 +47,6 @@ optionFilter;
     color="grey-7"
     class="modify-datepicker"
   ></QDate>
-  <!-- :navigation-min-year-month="today" -->
 </template>
 
 <style lang="scss" scoped>

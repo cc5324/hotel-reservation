@@ -1,15 +1,60 @@
 <script setup>
-import { useHotelStore } from "@/stores/hotel.js";
+import { computed, reactive, ref } from "vue";
 import { storeToRefs } from "pinia";
+import { useHotelStore } from "@/stores/hotel.js";
+import { useRoute } from "vue-router";
+
+import dayjs from "dayjs";
 
 import BaseDatePicker from "../components/BaseDatePicker.vue";
 import RoomAmenities from "@/components/RoomAmenities.vue";
 import RoomPhotos from "@/components/RoomPhotos.vue";
+import BaseModal from "../components/BaseModal.vue";
+import BaseInput from "../components/BaseInput.vue";
+import DateInput from "../components/DateInput.vue";
 
 const hotelStore = useHotelStore();
 const { room } = storeToRefs(hotelStore);
 
-console.log(`room `, room);
+const route = useRoute();
+const isOpen = ref(false);
+
+const dates = ref({
+  from: "2022-11-29",
+  to: "2022-11-30",
+});
+
+const booking = reactive({
+  name: "",
+  tel: "",
+});
+
+function getRange({ from, to }) {
+  const ranges = [];
+  let currentDate = dayjs(from);
+  while (currentDate.isSame(from) || currentDate.isBefore(to)) {
+    ranges.push(currentDate.format("YYYY-MM-DD"));
+    currentDate = currentDate.add(1, "day");
+  }
+  return ranges;
+}
+
+async function submitHandler() {
+  const range = getRange(dates.value);
+  const params = { date: range, ...booking };
+  await hotelStore.reserveRoom(route.params.id, params);
+  messageDialog.isOpen = true;
+}
+
+const bookedDates = computed(() => hotelStore.getBookedDates);
+
+const isReady = computed(() => hotelStore.requestState.isReady);
+
+const isSuccess = computed(() => hotelStore.requestState.isSuccess);
+const messageDialog = reactive({
+  isOpen: false,
+  message: "",
+});
 </script>
 
 <template>
@@ -51,13 +96,57 @@ console.log(`room `, room);
       </div>
     </main>
     <div class="date-picker">
-      <BaseDatePicker />
-      <button>預約</button>
+      <BaseDatePicker v-model="dates" :booked-dates="bookedDates" />
+      <button @click="isOpen = true">預約</button>
     </div>
   </div>
+  <BaseModal v-model="isOpen" :title="'預約時間'">
+    <div>
+      <form @submit.prevent="">
+        <BaseInput v-model="booking.name" :label="'姓名'" />
+        <BaseInput v-model="booking.tel" :label="'電話'" />
+        <DateInput v-model="dates" :label="'預約時間'" />
+        <div class="form-buttons">
+          <button class="light-button" @click="isOpen = false">取消</button>
+          <button class="dark-button" @click="submitHandler">確定預約</button>
+        </div>
+      </form>
+    </div>
+  </BaseModal>
+  <BaseModal v-model="isReady" :title="isSuccess ? '預約成功' : '預約失敗'">
+    <div v-if="isSuccess">
+      <SvgIcon name="common-tick-inside-circle"></SvgIcon>
+      <button
+        class="dark-button"
+        @click="
+          () => {
+            $router.push({ name: 'rooms' });
+            hotelStore.resetRequestState();
+          }
+        "
+      >
+        回首頁
+      </button>
+    </div>
+    <div v-else>
+      <p>預約時間已被人預定</p>
+      <button
+        class="dark-button"
+        @click="
+          () => {
+            $router.go(0);
+            hotelStore.resetRequestState();
+          }
+        "
+      >
+        返回
+      </button>
+    </div>
+  </BaseModal>
 </template>
 
 <style scoped lang="scss">
+@use "@/assets/scss/_button.scss";
 .main-wrapper {
   display: flex;
   justify-content: space-between;
@@ -112,18 +201,34 @@ main {
     font-size: 14px;
     color: #6d7278;
     letter-spacing: 1.46px;
-    // text-align: right;
     line-height: 27px;
   }
 }
 
 button {
   display: block;
-  padding: 10px 15px;
+  padding: 10px 25px;
   margin-top: 20px;
 
   border: none;
   color: white;
-  background: #575757;
+  background: #d8d8d8;
+  color: #6d7278;
+  letter-spacing: 1.46px;
+}
+
+form {
+  margin-top: 40px;
+  > * {
+    margin-bottom: 15px;
+  }
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  button {
+    display: inline-block;
+  }
 }
 </style>

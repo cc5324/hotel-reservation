@@ -30,7 +30,6 @@ hotelAPI.interceptors.response.use(
     return response;
   },
   function (error) {
-    console.log("here");
     console.log(`error`, error.response);
     if (error.response) {
       switch (error.response.status) {
@@ -60,12 +59,10 @@ hotelAPI.interceptors.response.use(
 //
 export default {
   async GET(url, params) {
-    // console.log("執行 get");
     try {
       const res = await hotelAPI.get(url, {
         params,
       });
-      console.log(`res.data`, res.data);
       return res.data;
     } catch (res) {
       console.log("GET error", res);
