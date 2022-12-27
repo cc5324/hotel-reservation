@@ -6,12 +6,13 @@ import { useRoute } from "vue-router";
 
 import dayjs from "dayjs";
 
-import BaseDatePicker from "../components/BaseDatePicker.vue";
+import BaseDatePicker from "@/components/BaseDatePicker.vue";
 import RoomAmenities from "@/components/RoomAmenities.vue";
 import RoomPhotos from "@/components/RoomPhotos.vue";
-import BaseModal from "../components/BaseModal.vue";
-import BaseInput from "../components/BaseInput.vue";
-import DateInput from "../components/DateInput.vue";
+import BaseModal from "@/components/BaseModal.vue";
+import BaseInput from "@/components/BaseInput.vue";
+import DateInput from "@/components/DateInput.vue";
+import BaseButton from "@/components/BaseButton.vue";
 
 const hotelStore = useHotelStore();
 const { room } = storeToRefs(hotelStore);
@@ -67,9 +68,9 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
           <div class="room-detail-description">
             <div class="room-detail-description--ch">
               <p>
-                房客人數限制：{{ room.descriptionShort.GuestMin }}~{{
-                  room.descriptionShort.GuestMax
-                }}
+                房客人數限制：
+                {{ room.descriptionShort.GuestMin }}~
+                {{ room.descriptionShort.GuestMax }}
                 人
               </p>
               <p>房型：{{}}</p>
@@ -104,9 +105,14 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
           <p class="price-period">假日(一~四)</p>
         </div>
       </main>
-      <div class="date-picker">
+      <div class="calender">
         <BaseDatePicker v-model="dates" :booked-dates="bookedDates" />
-        <button @click="isFormModalOpen = true">預約</button>
+        <BaseButton
+          label="預約"
+          @click="isFormModalOpen = true"
+          class="calender-button"
+        ></BaseButton>
+        <!-- <button @click="isFormModalOpen = true">預約</button> -->
       </div>
     </div>
   </div>
@@ -272,17 +278,16 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
   }
 }
 
-button {
-  display: block;
-  padding: 10px 25px;
-  margin-top: 20px;
+.calender {
+  button {
+    display: block;
+    // padding: 10px 25px;
+    margin-top: 20px;
 
-  color: #6d7278;
-  background: #d8d8d8;
-  border: none;
-  letter-spacing: 1.46px;
-
-  cursor: pointer;
+    // color: #6d7278;
+    // background: #d8d8d8;
+    letter-spacing: 1.46px;
+  }
 }
 
 form {
@@ -297,6 +302,7 @@ form {
   justify-content: space-between;
   button {
     display: inline-block;
+    padding: 10px 25px;
   }
 }
 </style>
