@@ -5,6 +5,7 @@ import { useHotelStore } from "@/stores/hotel.js";
 import { useRoute } from "vue-router";
 
 import dayjs from "dayjs";
+import weekday from "dayjs";
 
 import BaseDatePicker from "@/components/BaseDatePicker.vue";
 import RoomAmenities from "@/components/RoomAmenities.vue";
@@ -13,9 +14,12 @@ import BaseModal from "@/components/BaseModal.vue";
 import BaseInput from "@/components/BaseInput.vue";
 import DateInput from "@/components/DateInput.vue";
 import BaseButton from "@/components/BaseButton.vue";
+import StripeSeparator from "../components/StripeSeperator.vue";
+
+dayjs.extend(weekday);
 
 const hotelStore = useHotelStore();
-const { room } = storeToRefs(hotelStore);
+const { room, getRoomShortDescription } = storeToRefs(hotelStore);
 
 const route = useRoute();
 const isFormModalOpen = ref(false);
@@ -25,6 +29,25 @@ const today = dayjs().format("YYYY-MM-DD");
 const dates = ref({
   from: today,
   to: dayjs(today).add(1, "day").format("YYYY-MM-DD"),
+});
+
+const getWeekday = computed(() => {
+  const appendix = {
+    weekday: [1, 2, 3, 4, 5],
+    weekend: [0, 6],
+  };
+  const result = { weekday: 0, weekend: 0 };
+  const { from, to } = dates.value;
+  let day = dayjs(from);
+  while (day.isBefore(to)) {
+    if (appendix.weekday.includes(dayjs(day).day())) {
+      result.weekday += 1;
+    } else {
+      result.weekend += 1;
+    }
+    day = day.add(1, "day");
+  }
+  return result;
 });
 
 const booking = reactive({
@@ -73,12 +96,13 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
                 {{ room.descriptionShort.GuestMax }}
                 人
               </p>
-              <p>房型：{{}}</p>
-              <p>衛浴數量：{{}} 間</p>
-              <p>房間大小：{{}} 平方公尺</p>
+              <p>床型：{{ room.descriptionShort.Bed[0] }}</p>
+              <p>衛浴數量：{{ getRoomShortDescription.privateBath }} 間</p>
+              <p>房間大小：{{ room.descriptionShort.Footage }} 平方公尺</p>
             </div>
             <p class="room-detail-description--en">{{ room.description }}</p>
           </div>
+          <StripeSeparator />
           <div class="room-detail-checkInAndOut">
             <div class="check check--in">
               <span class="check-title">Check In</span>
@@ -122,6 +146,23 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
         <BaseInput v-model="booking.name" :label="'姓名'" />
         <BaseInput v-model="booking.tel" :label="'電話'" />
         <DateInput v-model="dates" :label="'預約時間'" />
+        <div class="form-calculate">
+          <p>
+            <span>平日時段</span>
+            <span>{{ getWeekday.weekday }} 夜</span>
+          </p>
+          <p>
+            <span>假日時段</span>
+            <span>{{ getWeekday.weekend }} 夜</span>
+          </p>
+        </div>
+        <div class="form-price">
+          = NT.
+          {{
+            getWeekday.weekday * room.normalDayPrice +
+            getWeekday.weekend * room.holidayPrice
+          }}
+        </div>
         <div class="form-buttons">
           <button class="light-button" @click="isFormModalOpen = false">
             取消
@@ -252,7 +293,7 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
   width: 500px;
 
   text-align: right;
-  font-family: NotoSansCJKtc-Light;
+  // font-family: NotoSansCJKtc-Light;
 
   &-main {
     font-size: 30px;
@@ -270,7 +311,7 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
     line-height: 27px;
   }
   .price-period {
-    font-family: NotoSansCJKtc-Light;
+    // font-family: NotoSansCJKtc-Light;
     font-size: 14px;
     color: #6d7278;
     letter-spacing: 1.46px;
@@ -297,12 +338,41 @@ form {
   }
 }
 
-.form-buttons {
-  display: flex;
-  justify-content: space-between;
-  button {
-    display: inline-block;
-    padding: 10px 25px;
+.form {
+  &-calculate {
+    padding: 15px 40px;
+    margin: 30px 0 10px;
+    background-color: #ededed;
+    color: #6d7278;
+    font-size: 12px;
+
+    > p {
+      display: flex;
+      justify-content: space-between;
+      margin: 0;
+
+      font-weight: 500;
+      letter-spacing: 1.25px;
+    }
+
+    // text-align-last: justify;
+  }
+
+  &-price {
+    margin-bottom: 30px;
+
+    color: #ff5c5c;
+    font-size: 26px;
+    text-align: right;
+  }
+
+  &-buttons {
+    display: flex;
+    justify-content: space-between;
+    button {
+      display: inline-block;
+      padding: 10px 25px;
+    }
   }
 }
 </style>

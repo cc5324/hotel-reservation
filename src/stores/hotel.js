@@ -19,6 +19,9 @@ export const useHotelStore = defineStore("hotel", {
     },
     getRoomAmenities: (state) => camelizeJsonKeys(state.room.amenities),
     getBookedDates: (state) => state.booked.map((book) => book.date),
+    getRoomShortDescription: (state) =>
+      camelizeJsonKeys(state.room.descriptionShort),
+    // getRoomProfile: (state) => camelizeJsonKeys(state.room),
   },
   actions: {
     resetRequestState() {
@@ -41,9 +44,14 @@ export const useHotelStore = defineStore("hotel", {
     },
     async getRoom(roomID) {
       try {
-        const { room, booking } = await API.GET(`room/${roomID}`);
-        this.room = room[0];
-        this.booked = booking;
+        const res = await API.GET(`room/${roomID}`);
+        this.room = res.room[0];
+        this.booked = res.booking;
+        console.log(`get room res`, res);
+
+        // const { room, booking } = await API.GET(`room/${roomID}`);
+        // this.room = room[0];
+        // this.booked = booking;
       } catch (error) {
         console.log(error);
         router.push({ name: "NotFound" });

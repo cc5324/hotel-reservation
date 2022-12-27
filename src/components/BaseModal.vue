@@ -53,10 +53,11 @@ defineProps({
 }
 
 .modal {
+  // width: 425px;
   // max-width: 50vw;
-  min-width: 60vw;
+  // min-width: 60vw;
   background-color: white;
-  padding: 30px;
+  padding: 25px 40px;
   border-radius: 5px;
 
   button {
@@ -66,6 +67,10 @@ defineProps({
   .title {
     margin: 0 0;
     font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 2.5px;
+
+    // color: #000000;
   }
 }
 
