@@ -1,9 +1,6 @@
 <script setup></script>
 
 <template>
-  <header>
-    <div class="wrapper"></div>
-  </header>
   <div class="wrapper">
     <router-view v-slot="{ Component }">
       <suspense timeout="0">

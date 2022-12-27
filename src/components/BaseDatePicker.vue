@@ -34,7 +34,7 @@ function optionFilter(date) {
 </script>
 
 <template>
-  <span v-for="day in bookedDates" :key="day">{{ day }},</span>
+  <!-- <span v-for="day in bookedDates" :key="day">{{ day }},</span> -->
   <QDate
     v-model="range"
     :navigation-min-year-month="dayjs().format('YYYY/MM')"

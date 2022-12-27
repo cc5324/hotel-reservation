@@ -72,12 +72,18 @@ const iconMap = {
 </template>
 
 <style scoped lang="scss">
+@use "@/assets/scss/_breakpoint.scss";
 @use "@/assets/scss/color.scss";
+
 .wrapper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  padding: 30px;
+  padding: 15px;
   background: color.$bg-gray-light;
+
+  @include breakpoint.tablet {
+    padding: 30px;
+  }
 }
 
 .noOffering {

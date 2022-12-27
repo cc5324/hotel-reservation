@@ -56,46 +56,58 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
 </script>
 
 <template>
-  <div class="photos-box">
-    <RoomPhotos :photos="room.imageUrl" />
-  </div>
-  <div class="main-wrapper">
-    <main>
-      <div class="room-detail">
-        <h3>{{ room.name }}</h3>
-        <div class="description">
-          <p>
-            房客人數限制：{{ room.descriptionShort.GuestMin }}~{{
-              room.descriptionShort.GuestMax
-            }}
-          </p>
-          <p>房型：{{}}</p>
-          <p>衛浴數量：{{}}</p>
-          <p>房間大小：{{}}</p>
-          <p>{{ room.description }}</p>
-        </div>
-        <div class="checkInAndOut">
-          <div>
-            <span>Check In</span>
-            {{ room.checkInAndOut.checkInEarly }} －
-            {{ room.checkInAndOut.checkInLate }}
+  <div class="page-wrapper">
+    <div class="page-header">
+      <RoomPhotos :photos="room.imageUrl" />
+    </div>
+    <div class="main-wrapper">
+      <main>
+        <div class="room-detail">
+          <h3 class="room-detail-name">{{ room.name }}</h3>
+          <div class="room-detail-description">
+            <div class="room-detail-description--ch">
+              <p>
+                房客人數限制：{{ room.descriptionShort.GuestMin }}~{{
+                  room.descriptionShort.GuestMax
+                }}
+                人
+              </p>
+              <p>房型：{{}}</p>
+              <p>衛浴數量：{{}} 間</p>
+              <p>房間大小：{{}} 平方公尺</p>
+            </div>
+            <p class="room-detail-description--en">{{ room.description }}</p>
           </div>
-          <div><span>Check Out</span> {{ room.checkInAndOut.checkOut }}</div>
+          <div class="room-detail-checkInAndOut">
+            <div class="check check--in">
+              <span class="check-title">Check In</span>
+              <div class="check-time">
+                {{ room.checkInAndOut.checkInEarly }} －
+                {{ room.checkInAndOut.checkInLate }}
+              </div>
+            </div>
+            <div class="check check--out">
+              <span class="check-title">Check Out</span>
+              <div class="check-time">
+                {{ room.checkInAndOut.checkOut }}
+              </div>
+            </div>
+          </div>
+          <div class="room-detail-facilities">
+            <RoomAmenities :amenities="hotelStore.getRoomAmenities" />
+          </div>
         </div>
-        <div class="facilities">
-          <RoomAmenities :amenities="hotelStore.getRoomAmenities" />
+        <div class="room-detail-price price">
+          <p class="price-main">NT. {{ room.normalDayPrice }}</p>
+          <p class="price-period">平日(一~四)</p>
+          <p class="price-sub">NT. {{ room.holidayPrice }}</p>
+          <p class="price-period">假日(一~四)</p>
         </div>
+      </main>
+      <div class="date-picker">
+        <BaseDatePicker v-model="dates" :booked-dates="bookedDates" />
+        <button @click="isFormModalOpen = true">預約</button>
       </div>
-      <div class="room-price price">
-        <p class="price-main">NT. {{ room.normalDayPrice }}</p>
-        <p class="price-period">平日(一~四)</p>
-        <p class="price-sub">NT. {{ room.holidayPrice }}</p>
-        <p class="price-period">假日(一~四)</p>
-      </div>
-    </main>
-    <div class="date-picker">
-      <BaseDatePicker v-model="dates" :booked-dates="bookedDates" />
-      <button @click="isFormModalOpen = true">預約</button>
     </div>
   </div>
   <BaseModal v-model="isFormModalOpen" :title="'預約時間'">
@@ -136,40 +148,103 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
 </template>
 
 <style scoped lang="scss">
+@use "@/assets/scss/_breakpoint.scss";
 @use "@/assets/scss/_button.scss";
+
+.page {
+  &-wrapper {
+    max-width: 1280px;
+    min-width: 375px;
+    margin: 0 auto;
+  }
+  &-header {
+    height: 300px;
+    @include breakpoint.tablet {
+      height: 600px;
+    }
+  }
+}
+
 .main-wrapper {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+
+  padding: 20px;
+
+  @include breakpoint.desktop {
+    display: flex;
+    flex-wrap: nowrap;
+
+    padding: 30px;
+  }
 
   main {
-    flex: 0 0 60%;
+    flex: 0 0 100%;
+    @include breakpoint.tablet {
+      flex: 0 0 60%;
+    }
+
+    display: flex;
+    flex-wrap: wrap;
+    @include breakpoint.tablet {
+      display: flex;
+      flex-wrap: nowrap;
+    }
   }
-
-  .date-picker {
-    flex: 0 0 30%;
-  }
-
-  padding: 30px;
-}
-
-.photos-box {
-  height: 300px;
-}
-main {
-  display: flex;
 }
 
 .room-detail {
   text-align: left;
+
+  &-name {
+    margin-bottom: 30px;
+    font-size: 36px;
+    font-weight: 500;
+    letter-spacing: 3.76px;
+  }
+
+  &description {
+    &--ch {
+      font-size: 14px;
+    }
+
+    &--en {
+      font-size: 12px;
+    }
+  }
+
+  &-checkInAndOut {
+    margin-bottom: 40px;
+
+    .check {
+      display: inline-block;
+
+      &--in {
+        margin-right: 100px;
+      }
+    }
+  }
+
+  &-facilities {
+    margin-bottom: 40px;
+  }
 }
 
-.checkInAndOut {
-  > div {
-    display: inline-block;
+.check {
+  font-weight: 300;
+
+  &-title {
+    font-size: 20px;
+  }
+  &-time {
+    font-size: 30px;
   }
 }
 
 .price {
+  width: 500px;
+
   text-align: right;
   font-family: NotoSansCJKtc-Light;
 
@@ -202,11 +277,12 @@ button {
   padding: 10px 25px;
   margin-top: 20px;
 
-  border: none;
-  color: white;
-  background: #d8d8d8;
   color: #6d7278;
+  background: #d8d8d8;
+  border: none;
   letter-spacing: 1.46px;
+
+  cursor: pointer;
 }
 
 form {
