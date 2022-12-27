@@ -17,11 +17,13 @@ const hotelStore = useHotelStore();
 const { room } = storeToRefs(hotelStore);
 
 const route = useRoute();
-const isOpen = ref(false);
+const isFormModalOpen = ref(false);
+
+const today = dayjs().format("YYYY-MM-DD");
 
 const dates = ref({
-  from: "2022-11-29",
-  to: "2022-11-30",
+  from: today,
+  to: dayjs(today).add(1, "day").format("YYYY-MM-DD"),
 });
 
 const booking = reactive({
@@ -43,7 +45,7 @@ async function submitHandler() {
   const range = getRange(dates.value);
   const params = { date: range, ...booking };
   await hotelStore.reserveRoom(route.params.id, params);
-  messageDialog.isOpen = true;
+  isFormModalOpen.value = false;
 }
 
 const bookedDates = computed(() => hotelStore.getBookedDates);
@@ -51,10 +53,6 @@ const bookedDates = computed(() => hotelStore.getBookedDates);
 const isReady = computed(() => hotelStore.requestState.isReady);
 
 const isSuccess = computed(() => hotelStore.requestState.isSuccess);
-const messageDialog = reactive({
-  isOpen: false,
-  message: "",
-});
 </script>
 
 <template>
@@ -97,17 +95,19 @@ const messageDialog = reactive({
     </main>
     <div class="date-picker">
       <BaseDatePicker v-model="dates" :booked-dates="bookedDates" />
-      <button @click="isOpen = true">預約</button>
+      <button @click="isFormModalOpen = true">預約</button>
     </div>
   </div>
-  <BaseModal v-model="isOpen" :title="'預約時間'">
+  <BaseModal v-model="isFormModalOpen" :title="'預約時間'">
     <div>
       <form @submit.prevent="">
         <BaseInput v-model="booking.name" :label="'姓名'" />
         <BaseInput v-model="booking.tel" :label="'電話'" />
         <DateInput v-model="dates" :label="'預約時間'" />
         <div class="form-buttons">
-          <button class="light-button" @click="isOpen = false">取消</button>
+          <button class="light-button" @click="isFormModalOpen = false">
+            取消
+          </button>
           <button class="dark-button" @click="submitHandler">確定預約</button>
         </div>
       </form>
@@ -118,12 +118,7 @@ const messageDialog = reactive({
       <SvgIcon name="common-tick-inside-circle"></SvgIcon>
       <button
         class="dark-button"
-        @click="
-          () => {
-            $router.push({ name: 'rooms' });
-            hotelStore.resetRequestState();
-          }
-        "
+        @click="$router.push({ name: 'rooms' }), hotelStore.resetRequestState()"
       >
         回首頁
       </button>
@@ -132,12 +127,7 @@ const messageDialog = reactive({
       <p>預約時間已被人預定</p>
       <button
         class="dark-button"
-        @click="
-          () => {
-            $router.go(0);
-            hotelStore.resetRequestState();
-          }
-        "
+        @click="$router.go(0), hotelStore.resetRequestState()"
       >
         返回
       </button>
@@ -158,6 +148,8 @@ const messageDialog = reactive({
   .date-picker {
     flex: 0 0 30%;
   }
+
+  padding: 30px;
 }
 
 .photos-box {
