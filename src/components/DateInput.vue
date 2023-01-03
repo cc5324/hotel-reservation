@@ -1,8 +1,6 @@
 <script setup>
-import { reactive } from "vue";
+import { ref, reactive } from "vue";
 import dayjs from "dayjs";
-
-// const today = new Date().toISOString().split("T")[0];
 
 defineEmits(["update:modelValue"]);
 const props = defineProps({
@@ -22,6 +20,19 @@ const dates = reactive({
   from: props.modelValue.from,
   to: props.modelValue.to,
 });
+
+const fromInput = ref(null);
+const toInput = ref(null);
+
+function checkNoAfter(event) {
+  if (!dayjs(dates.from).isAfter(dates.to)) return;
+  if (event.target === fromInput.value) {
+    toInput.value.value = "";
+  }
+  if (event.target === toInput.value) {
+    fromInput.value.value = "";
+  }
+}
 </script>
 
 <template>
@@ -32,7 +43,8 @@ const dates = reactive({
       v-model="dates.from"
       :min="today"
       pattern="\[0-9]{4}-\[0-9]{2}-\[0-9]{2}"
-      @change="$emit('update:modelValue', dates)"
+      @change="$emit('update:modelValue', dates), checkNoAfter($event)"
+      ref="fromInput"
     />
     <span class="base-input-separator">～</span>
     <input
@@ -42,6 +54,7 @@ const dates = reactive({
       :max="dayjs(dates.from).add(3, 'M').format('YYYY-MM-DD')"
       pattern="[0-9]{4}/[0-9]{2}/[0-9]{2}"
       @change="$emit('update:modelValue', dates)"
+      ref="toInput"
     />
   </label>
 </template>
