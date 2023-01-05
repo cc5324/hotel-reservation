@@ -1,6 +1,6 @@
 <script setup>
-import { useHotelStore } from "@/stores/hotel.js";
 import { ref, computed, onBeforeMount } from "vue";
+import { useHotelStore } from "@/stores/hotel.js";
 
 const hotelStore = useHotelStore();
 
@@ -10,13 +10,6 @@ onBeforeMount(async () => {
   currentRoom.value = hotelStore.rooms[0];
 });
 const imageUrl = computed(() => currentRoom.value?.imageUrl);
-
-// const bgImage = ref(null);
-// const bgImage = computed(() => hotelStore.rooms[0].imageUrl);
-
-// const currentRoom = computed(() => hotelStore.rooms[0]);
-// const bgImage = computed(() => hotelStore.rooms[2].imageUrl);
-// const currentRoom = computed(() => hotelStore.rooms[0]);
 
 function renderRoom(roomIndex) {
   currentRoom.value = hotelStore.rooms[roomIndex];
