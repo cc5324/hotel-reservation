@@ -1,5 +1,4 @@
 <script setup>
-// import { RouterLink } from "vue-router";
 import { useHotelStore } from "@/stores/hotel.js";
 import { ref, computed, onBeforeMount } from "vue";
 
@@ -20,7 +19,6 @@ const imageUrl = computed(() => currentRoom.value?.imageUrl);
 // const currentRoom = computed(() => hotelStore.rooms[0]);
 
 function renderRoom(roomIndex) {
-  console.log(roomIndex, "id");
   currentRoom.value = hotelStore.rooms[roomIndex];
 }
 
@@ -47,9 +45,11 @@ function findIndex(id) {
       alt="white space"
       class="homepage-logo"
     />
-    <div class="homepage-caption caption">
-      <div class="caption-index">{{ findIndex(currentRoom?.id) }}</div>
-      <p class="caption-name">{{ currentRoom?.name }}</p>
+    <div class="homepage-caption">
+      <div class="caption">
+        <div class="caption-index">{{ findIndex(currentRoom?.id) }}</div>
+        <p class="caption-name">{{ currentRoom?.name }}</p>
+      </div>
     </div>
     <div class="homepage-main">
       <div class="homepage-main-rooms">
@@ -65,42 +65,46 @@ function findIndex(id) {
           </li>
         </ul>
       </div>
-      <div class="homepage-main-media">
-        <img
-          src="@/assets/icons/common/facebook-square-brands.svg"
-          alt="facebook link"
-          class="icon"
-        />
-        <img
-          src="@/assets/icons/common/instagram-brands.svg"
-          alt="instagram link"
-          class="icon"
-        />
-      </div>
-      <div class="homepage-main-contacts">
-        <div class="contact">
+    </div>
+    <div class="homepage-connection">
+      <div class="connection">
+        <div class="connection-media">
           <img
-            src="@/assets/icons/common/phone-alt-solid.svg"
-            alt="phone icon"
+            src="@/assets/icons/common/facebook-square-brands.svg"
+            alt="facebook link"
             class="icon"
           />
-          <span>02-2222-2222</span>
+          <img
+            src="@/assets/icons/common/instagram-brands.svg"
+            alt="instagram link"
+            class="icon"
+          />
         </div>
-        <div class="contact">
-          <img
-            src="@/assets/icons/common/envelope-solid.svg"
-            alt="email icon"
-            class="icon"
-          />
-          <span>white-space@hotel.com.tw</span>
-        </div>
-        <div class="contact">
-          <img
-            src="@/assets/icons/common/home-solid.svg"
-            alt="house icon"
-            class="icon"
-          />
-          <span>台北市中正區</span>
+        <div class="connection-contacts">
+          <div class="contact">
+            <img
+              src="@/assets/icons/common/phone-alt-solid.svg"
+              alt="phone icon"
+              class="icon"
+            />
+            <span>02-2222-2222</span>
+          </div>
+          <div class="contact">
+            <img
+              src="@/assets/icons/common/envelope-solid.svg"
+              alt="email icon"
+              class="icon"
+            />
+            <span>white-space@hotel.com.tw</span>
+          </div>
+          <div class="contact">
+            <img
+              src="@/assets/icons/common/home-solid.svg"
+              alt="house icon"
+              class="icon"
+            />
+            <span>台北市中正區</span>
+          </div>
         </div>
       </div>
     </div>
@@ -120,7 +124,7 @@ function findIndex(id) {
 .homepage {
   height: 100vh;
   width: 100vw;
-  padding: 50px 0 70px 70px;
+  padding: 50px 30px 70px 70px;
 
   position: relative;
 
@@ -144,39 +148,53 @@ function findIndex(id) {
     &-media {
       padding-left: 24px;
     }
+  }
 
-    &-media {
-      margin-bottom: 50px;
-    }
+  &-caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
-    &-contacts {
-      font-family: NotoSansCJKtc-DemiLight;
-      font-size: 14px;
-      color: #ffffff;
+    padding-left: inherit;
+    padding-right: inherit;
+    padding-bottom: inherit;
 
-      .contact {
-        & + & {
-          margin-top: 10px;
-        }
-        img,
-        span {
-          vertical-align: middle;
-        }
-      }
-    }
+    width: fit-content;
+  }
+
+  &-connection {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    padding-right: inherit;
+    padding-bottom: inherit;
+  }
+}
+
+.contact {
+  & + & {
+    margin-top: 10px;
+  }
+
+  img,
+  span {
+    vertical-align: middle;
+  }
+}
+
+.connection {
+  font-family: NotoSansCJKtc-DemiLight;
+  font-size: 14px;
+  color: #ffffff;
+
+  &-media {
+    margin-bottom: 50px;
   }
 }
 
 .caption {
-  padding-left: inherit;
-  padding-right: inherit;
-  padding-bottom: inherit;
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
   &-index {
     width: 86px;
     // font-family: NotoSansCJKtc-DemiLight;
