@@ -142,10 +142,10 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
   </div>
   <BaseModal v-model="isFormModalOpen" :title="'預約時間'">
     <div>
-      <form @submit.prevent="">
-        <BaseInput v-model="booking.name" :label="'姓名'" />
-        <BaseInput v-model="booking.tel" :label="'電話'" />
-        <DateInput v-model="dates" :label="'預約時間'" />
+      <form @submit.prevent="submitHandler">
+        <BaseInput v-model="booking.name" :label="'姓名'" required />
+        <BaseInput v-model="booking.tel" :label="'電話'" required />
+        <DateInput v-model="dates" :label="'預約時間'" required />
         <div class="form-calculate">
           <p>
             <span>平日時段</span>
@@ -167,7 +167,7 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
           <button class="light-button" @click="isFormModalOpen = false">
             取消
           </button>
-          <button class="dark-button" @click="submitHandler">確定預約</button>
+          <button class="dark-button" type="submit">確定預約</button>
         </div>
       </form>
     </div>

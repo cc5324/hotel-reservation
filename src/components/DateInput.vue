@@ -11,6 +11,9 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  required: {
+    type: Boolean,
+  },
 });
 
 // emit("update:modelValue");
@@ -45,6 +48,7 @@ function checkNoAfter(event) {
       pattern="\[0-9]{4}-\[0-9]{2}-\[0-9]{2}"
       @change="$emit('update:modelValue', dates), checkNoAfter($event)"
       ref="fromInput"
+      :required="required"
     />
     <span class="base-input-separator">～</span>
     <input
@@ -55,6 +59,7 @@ function checkNoAfter(event) {
       pattern="[0-9]{4}/[0-9]{2}/[0-9]{2}"
       @change="$emit('update:modelValue', dates)"
       ref="toInput"
+      :required="required"
     />
   </label>
 </template>

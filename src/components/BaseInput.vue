@@ -9,6 +9,9 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  required: {
+    type: Boolean,
+  },
 });
 const emit = defineEmits(["update:modelValue"]);
 
@@ -25,7 +28,7 @@ const input = computed({
 <template>
   <label class="base-input">
     <span>{{ label }}</span>
-    <input type="text" v-model="input" />
+    <input type="text" v-model="input" :required="required" />
   </label>
 </template>
 
