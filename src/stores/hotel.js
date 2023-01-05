@@ -12,6 +12,7 @@ export const useHotelStore = defineStore("hotel", {
       isReady: false,
       isSuccess: false,
     },
+    isLoading: false,
   }),
   getters: {
     getRoomById: (state) => {
@@ -31,6 +32,7 @@ export const useHotelStore = defineStore("hotel", {
       };
     },
     async getRooms() {
+      this.isLoading = true;
       try {
         const { success, items: rooms } = await API.GET("rooms");
         if (success) {
@@ -40,21 +42,21 @@ export const useHotelStore = defineStore("hotel", {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        this.isLoading = false;
       }
     },
     async getRoom(roomID) {
+      this.isLoading = true;
       try {
-        const res = await API.GET(`room/${roomID}`);
-        this.room = res.room[0];
-        this.booked = res.booking;
-        console.log(`get room res`, res);
-
-        // const { room, booking } = await API.GET(`room/${roomID}`);
-        // this.room = room[0];
-        // this.booked = booking;
+        const { room, booking } = await API.GET(`room/${roomID}`);
+        this.room = room[0];
+        this.booked = booking;
       } catch (error) {
         console.log(error);
         router.push({ name: "NotFound" });
+      } finally {
+        this.isLoading = false;
       }
     },
     async reserveRoom(roomID, customerInfo) {
