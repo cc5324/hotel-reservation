@@ -45,23 +45,27 @@ function findIndex(id) {
     <img
       src="@/assets/icons/common/logo_white.svg"
       alt="white space"
-      class="logo"
+      class="homepage-logo"
     />
-    <div class="room-title">
-      <div class="room-title-index">{{ findIndex(currentRoom?.id) }}</div>
-      <p class="room-title-name">{{ currentRoom?.name }}</p>
+    <div class="homepage-caption caption">
+      <div class="caption-index">{{ findIndex(currentRoom?.id) }}</div>
+      <p class="caption-name">{{ currentRoom?.name }}</p>
     </div>
     <div class="homepage-main">
-      <ul class="rooms-list">
-        <li
-          v-for="(room, index) in hotelStore.rooms"
-          :key="room.id"
-          @mouseenter="renderRoom(index, $event)"
-        >
-          {{ room.name }}
-        </li>
-      </ul>
-      <div class="media">
+      <div class="homepage-main-rooms">
+        <ul class="rooms">
+          <li
+            v-for="(room, index) in hotelStore.rooms"
+            :key="room.id"
+            @mouseenter="renderRoom(index, $event)"
+          >
+            <router-link :to="{ name: 'room', params: { id: room.id } }">
+              {{ room.name }}
+            </router-link>
+          </li>
+        </ul>
+      </div>
+      <div class="homepage-main-media">
         <img
           src="@/assets/icons/common/facebook-square-brands.svg"
           alt="facebook link"
@@ -73,8 +77,8 @@ function findIndex(id) {
           class="icon"
         />
       </div>
-      <div class="contact">
-        <div class="contact-type">
+      <div class="homepage-main-contacts">
+        <div class="contact">
           <img
             src="@/assets/icons/common/phone-alt-solid.svg"
             alt="phone icon"
@@ -82,7 +86,7 @@ function findIndex(id) {
           />
           <span>02-2222-2222</span>
         </div>
-        <div class="contact-type">
+        <div class="contact">
           <img
             src="@/assets/icons/common/envelope-solid.svg"
             alt="email icon"
@@ -90,7 +94,7 @@ function findIndex(id) {
           />
           <span>white-space@hotel.com.tw</span>
         </div>
-        <div class="contact-type">
+        <div class="contact">
           <img
             src="@/assets/icons/common/home-solid.svg"
             alt="house icon"
@@ -104,20 +108,31 @@ function findIndex(id) {
 </template>
 
 <style scoped lang="scss">
+@use "@/assets/scss/stripe.scss";
+
+.icon {
+  width: 20px;
+  height: 20px;
+
+  margin-right: 10px;
+}
+
 .homepage {
   height: 100vh;
   width: 100vw;
-
   padding: 50px 0 70px 70px;
+
+  position: relative;
+
+  overflow: hidden;
+
   text-align: start;
 
   transition: background-image 0.8s ease-in-out;
 
-  .logo {
+  &-logo {
     margin: 0 auto 0 0;
   }
-
-  position: relative;
 
   &-main {
     position: absolute;
@@ -125,28 +140,21 @@ function findIndex(id) {
     right: 0;
     padding-top: inherit;
 
-    .icon {
-      width: 20px;
-      height: 20px;
-
-      margin-right: 10px;
-    }
-
-    .contact,
-    .media {
+    &-contacts,
+    &-media {
       padding-left: 24px;
     }
 
-    .media {
+    &-media {
       margin-bottom: 50px;
     }
 
-    .contact {
+    &-contacts {
       font-family: NotoSansCJKtc-DemiLight;
       font-size: 14px;
       color: #ffffff;
 
-      &-type {
+      .contact {
         & + & {
           margin-top: 10px;
         }
@@ -159,7 +167,7 @@ function findIndex(id) {
   }
 }
 
-.room-title {
+.caption {
   padding-left: inherit;
   padding-right: inherit;
   padding-bottom: inherit;
@@ -184,21 +192,9 @@ function findIndex(id) {
       position: absolute;
       bottom: 10px;
 
-      // width: 86px;
       width: 100%;
       height: 19px;
-      // background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4NnB4IiBoZWlnaHQ9IjE5cHgiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuX2x5VDJCIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSgxMzUpIj48bGluZSB4MT0iMCIgeT0iMCIgeDI9IjAiIHkyPSIxNSIgc3Ryb2tlPSIjMTk0ZDMzIiBzdHJva2Utd2lkdGg9IjI4Ii8+PC9wYXR0ZXJuPjwvZGVmcz4gPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuX2x5VDJCKSIgb3BhY2l0eT0iMSIvPjwvc3ZnPg==");
-      background-image: linear-gradient(
-        45deg,
-        #ffffff 3.57%,
-        rgba(255, 255, 255, 0.1) 3.57%,
-        rgba(255, 255, 255, 0.1) 50%,
-        #ffffff 50%,
-        #ffffff 53.57%,
-        rgba(255, 255, 255, 0.1) 53.57%,
-        rgba(255, 255, 255, 0.1) 100%
-      );
-      background-size: 19.8px 19.8px;
+      @include stripe.white-stripe;
     }
   }
   &-name {
@@ -209,7 +205,7 @@ function findIndex(id) {
   }
 }
 
-.rooms-list {
+.rooms {
   width: 300px;
   padding: 37px 0 62px 34px;
   margin: 0 0 100px auto;
@@ -220,8 +216,6 @@ function findIndex(id) {
   text-align: start;
   font-size: 14px;
   letter-spacing: 1.46px;
-
-  overflow: hidden;
 
   position: relative;
 
@@ -235,18 +229,7 @@ function findIndex(id) {
     left: 24px;
     bottom: 0;
     transform: translateY(100%);
-
-    background-image: linear-gradient(
-      45deg,
-      #ffffff 3.57%,
-      rgba(255, 255, 255, 0.1) 3.57%,
-      rgba(255, 255, 255, 0.1) 50%,
-      #ffffff 50%,
-      #ffffff 53.57%,
-      rgba(255, 255, 255, 0.1) 53.57%,
-      rgba(255, 255, 255, 0.1) 100%
-    );
-    background-size: 19.8px 19.8px;
+    @include stripe.white-stripe;
   }
 
   li {
