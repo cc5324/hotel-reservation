@@ -22,6 +22,8 @@ const hotelStore = useHotelStore();
 const { room, getRoomShortDescription } = storeToRefs(hotelStore);
 
 const route = useRoute();
+const id = route.params.id;
+
 const isFormModalOpen = ref(false);
 
 const today = dayjs().format("YYYY-MM-DD");
@@ -164,7 +166,12 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
           }}
         </div>
         <div class="form-buttons">
-          <button class="light-button" @click="isFormModalOpen = false">
+          <button
+            class="light-button"
+            @click="
+              (isFormModalOpen = false), (booking.name = ''), (booking.tel = '')
+            "
+          >
             取消
           </button>
           <button class="dark-button" type="submit">確定預約</button>
@@ -172,7 +179,11 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
       </form>
     </div>
   </BaseModal>
-  <BaseModal v-model="isReady" :title="isSuccess ? '預約成功' : '預約失敗'">
+  <BaseModal
+    v-model="isReady"
+    :title="isSuccess ? '預約成功' : '預約失敗'"
+    class="result-modal"
+  >
     <div v-if="isSuccess">
       <SvgIcon name="common-tick-inside-circle"></SvgIcon>
       <button
@@ -182,11 +193,11 @@ const isSuccess = computed(() => hotelStore.requestState.isSuccess);
         回首頁
       </button>
     </div>
-    <div v-else>
+    <div v-else class="modal-fail">
       <p>預約時間已被人預定</p>
       <button
         class="dark-button"
-        @click="$router.go(0), hotelStore.resetRequestState()"
+        @click="hotelStore.getRoomById(id), hotelStore.resetRequestState()"
       >
         返回
       </button>
@@ -373,6 +384,25 @@ form {
       display: inline-block;
       padding: 10px 25px;
     }
+  }
+}
+
+.result-modal {
+  button {
+    position: absolute;
+    bottom: 25px;
+    right: 40px;
+
+    // padding-right: inherit;
+    // padding-bottom: inherit;
+  }
+}
+.modal-fail {
+  p {
+    font-family: NotoSansCJKtc-Medium;
+    font-size: 14px;
+    color: #000000;
+    letter-spacing: 1.46px;
   }
 }
 </style>

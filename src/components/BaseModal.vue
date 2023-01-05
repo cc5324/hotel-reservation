@@ -15,22 +15,22 @@ defineProps({
 
 <template>
   <div class="root">
-    <Teleport to="body">
-      <Transition name="modal">
-        <div v-if="modelValue" class="modal-bg">
-          <div class="modal">
-            <p class="title">{{ title }}</p>
-            <StripeSeparator />
-            <slot />
-            <!-- <button @click="$emit('update:modelValue', false)">Close</button> -->
-          </div>
+    <!-- <Teleport to="body"> -->
+    <Transition name="modal">
+      <div v-if="modelValue" class="modal-bg">
+        <div class="modal">
+          <p class="title">{{ title }}</p>
+          <StripeSeparator class="separator" />
+          <slot />
         </div>
-      </Transition>
-    </Teleport>
+      </div>
+    </Transition>
+    <!-- </Teleport> -->
   </div>
 </template>
 
 <style lang="scss" scoped>
+@use "@/assets/scss/_breakpoint.scss";
 .root {
   position: relative;
 }
@@ -53,16 +53,21 @@ defineProps({
 }
 
 .modal {
+  // 為了讓 modal slot 內容可依據卡片定位
+  position: relative;
   // width: 425px;
   // max-width: 50vw;
   // min-width: 60vw;
+  @include breakpoint.tablet {
+    min-width: 425px;
+    min-height: 235px;
+  }
+
   background-color: white;
   padding: 25px 40px;
   border-radius: 5px;
 
-  button {
-    margin: 0 auto;
-  }
+  text-align: start;
 
   .title {
     margin: 0 0;
@@ -72,6 +77,10 @@ defineProps({
 
     // color: #000000;
   }
+}
+
+.separator {
+  margin-bottom: 24px;
 }
 
 .modal-enter-active,

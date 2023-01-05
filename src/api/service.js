@@ -44,9 +44,9 @@ hotelAPI.interceptors.response.use(
           alert("程式發生問題");
           console.log(error.message);
           break;
-        default:
-          alert("程式發生問題");
-          console.log(error.message);
+        // default:
+        //   alert("程式發生問題");
+        //   console.log(error.message);
       }
     }
     if (!window.navigator.onLine) {

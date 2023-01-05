@@ -72,6 +72,10 @@ export const useHotelStore = defineStore("hotel", {
         };
       } catch (error) {
         console.log(error);
+        this.requestState = {
+          isSuccess: false,
+          isReady: true,
+        };
       }
     },
     async deleteAllReservation() {
